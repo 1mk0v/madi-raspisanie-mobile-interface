@@ -1,0 +1,27 @@
+:root {
+    --app-indent:10px;
+    --default-font-size: 16px;
+    --white: #FFF;
+    --blue: #0085FF;
+    --dark-blue: #0072dd;
+}
+
+html body {
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+    background: url('/src/assets/img/Moskvitch.jpeg') no-repeat center center;
+}
+
+body {
+    line-height: 19px;
+    color: var(--white);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: var(--default-font-size);
+}
+
+.glassmorphizm {
+    background-color: rgba(255,255,255,0.3);
+    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px);
+}
