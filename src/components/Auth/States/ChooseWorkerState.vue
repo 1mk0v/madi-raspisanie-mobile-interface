@@ -1,5 +1,5 @@
 <template>
-    <div id='choose-your-worker' class="glassmorphizm">
+    <div id='choosing-state' class="glassmorphizm">
         <div>Кто вы?</div>
         <CustomButton
             @clickCustomButtonEvent="chooseWorker"
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import Cookie from '@/assets/js/cookie';
 import CustomButton from '@/components/Blocks/CustomButton.vue';
 
 export default {
@@ -24,16 +25,19 @@ export default {
     components: {
         CustomButton
     },
+    emits:['choosedCommunity'],
     methods: {
         chooseWorker(data) {
-            console.log(data)
+            const cookie = new Cookie();
+            cookie.append('community_type',data.value);
+            this.$emit('choosedCommunity', data);
         }
     }
 }
 </script>
 
-<style scoped>
-    #choose-your-worker {
+<style>
+    #choosing-state {
     text-align: center;
     margin: 10px;
     border-radius: 10px;
