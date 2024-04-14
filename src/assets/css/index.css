@@ -24,3 +24,13 @@ body {
     -webkit-backdrop-filter: blur(30px);
     backdrop-filter: blur(30px);
 }
+
+#choosing-state {
+    text-align: center;
+    margin: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: var(--app-indent);
+    gap: var(--app-indent);
+}

@@ -4,7 +4,7 @@
         <CustomButton
             @clickCustomButtonEvent="chooseWorker"
             id="student-button"
-            value="student">
+            value="group">
             Я студент
         </CustomButton>
         <CustomButton
@@ -37,13 +37,4 @@ export default {
 </script>
 
 <style>
-    #choosing-state {
-    text-align: center;
-    margin: 10px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    padding: var(--app-indent);
-    gap: var(--app-indent);
-}
 </style>

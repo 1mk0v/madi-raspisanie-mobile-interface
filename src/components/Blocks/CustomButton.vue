@@ -1,5 +1,6 @@
 <template>
-    <button @click="clickHandler">
+    <button @click="clickHandler"
+        :style="customStyles">
         <div>
             <slot></slot>
         </div>
@@ -11,7 +12,8 @@ export default {
     emits:['clickCustomButtonEvent'],
     props: {
         id: String,
-        value: String
+        value: String,
+        customStyles:Object
     },
     methods: {
         clickHandler() {
