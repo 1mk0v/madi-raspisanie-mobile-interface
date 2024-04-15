@@ -1,41 +1,20 @@
 <template>
     <div class="swiper">
         <div class="swiper-wrapper calendar-container">
-            <div class="swiper-slide">
-                <BlockComponent block-padding="5px" border-radius="5px" :is-button="true"
-                    @click-component-event="console.log('active')" class="day-container">
-                    <span>19</span>
-                    <span>Пн</span>
-                </BlockComponent>
-                <BlockComponent block-padding="5px" border-radius="5px" :is-button="true"
-                    @click-component-event="console.log('active')" class="day-container">
-                    <span>20</span>
-                    <span>Вт</span>
-                </BlockComponent>
-                <BlockComponent block-padding="5px" border-radius="5px" :is-button="true"
-                    @click-component-event="console.log('active')" class="day-container active">
-                    <span>21</span>
-                    <span>Ср</span>
-                </BlockComponent>
-                <BlockComponent block-padding="5px" border-radius="5px" :is-button="true"
-                    @click-component-event="console.log('active')" class="day-container">
-                    <span>22</span>
-                    <span>Чт</span>
-                </BlockComponent>
-                <BlockComponent block-padding="5px" border-radius="5px" :is-button="true"
-                    @click-component-event="console.log('active')" class="day-container">
-                    <span>23</span>
-                    <span>Пт</span>
-                </BlockComponent>
-                <BlockComponent block-padding="5px" border-radius="5px" :is-button="true"
-                    @click-component-event="console.log('active')" class="day-container">
-                    <span>24</span>
-                    <span>Сб</span>
-                </BlockComponent>
-                <BlockComponent block-padding="5px" border-radius="5px" :is-button="true"
-                    @click-component-event="console.log('active')" class="day-container">
-                    <span>25</span>
-                    <span>Вс</span>
+            <div class="swiper-slide"
+                v-for="dates, index in calendar.calendar"
+                :key="index">
+                <BlockComponent
+                    v-for="date, index in dates"
+                    block-padding="5px"
+                    border-radius="5px" 
+                    :is-button="true"
+                    @click-component-event="console.log('active')"
+                    class="day-container" 
+                    :class="{'active': date.isCurrentDay}"
+                    :key="index">
+                    <span>{{ date.day }}</span>
+                    <span>{{ date.weekday }}</span>
                 </BlockComponent>
             </div>
         </div>
@@ -44,21 +23,53 @@
 
 <script>
 import { Swiper } from 'swiper';
+import Calendar from '@/assets/js/calendar';
 import 'swiper/css';
 import BlockComponent from '../Blocks/BlockComponent.vue';
 export default {
     name: 'CalendarComponent',
-    created() {
-
-    },
     mounted() {
-        new Swiper('.swiper', {
+        const swiper = new Swiper('.swiper', {
             speed: 400,
-            spaceBetween: 100,
+            spaceBetween: 100
+        });
+        this.calendar.calendar.forEach((element,index) => {
+            element.forEach((element) => { 
+                if (element.isCurrentDay) { 
+                    swiper.slideTo(index, 400, false);
+                }
+            })
+        });
+        const todoList = (event) => {
+            this.changeWeekTypeValue(event.swipeDirection)
+            // this.generateDates(event)
+        }
+        swiper.on('slideChange', function (event) {
+            todoList(event)
         });
     },
     data() {
         return {
+            calendar: new Calendar()
+        }
+    },
+    emits: ['changeWeekTypeEvent'],
+    methods: {
+        generateDates(swiper) {
+            if (swiper.swipeDirection == 'next') {
+                this.calendar.item++
+                let newData = this.calendar.generateWeekCalendar(this.calendar.item + 1)
+                this.calendar.calendar.shift()
+                this.calendar.calendar.push(newData)
+            } else if (swiper.swipeDirection == 'prev') {
+                this.calendar.item--
+                let newData = this.calendar.generateWeekCalendar(this.calendar.item - 1);
+                this.calendar.calendar.pop()
+                this.calendar.calendar.unshift(newData)
+            }
+        },
+        changeWeekTypeValue: function(data) {
+            this.$emit('changeWeekTypeEvent', data)
         }
     },
     components: {
@@ -95,6 +106,10 @@ export default {
 
 .active {
     background-color: rgba(61, 61, 61, 50%);
+}
+
+.choosed {
+    background-color: rgba(61, 61, 61, 30%);
 }
 
 .weekday {
