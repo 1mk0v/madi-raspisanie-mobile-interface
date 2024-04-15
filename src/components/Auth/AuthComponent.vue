@@ -13,13 +13,13 @@ import ChooseWorkerState from './States/ChooseWorkerState.vue';
 import ChooseCommunityId from './States/ChooseCommunityId.vue';
 export default {
     name: 'AuthComponent',
-    created() {
+    mounted() {
         const cookie = new Cookie();
-        if (cookie.get('community_id') == undefined) {
+        if (!cookie.get('community_id')) {
             document.querySelector('#app').style = null
             this.currentState = 'choose-community-id';
         }
-        if (cookie.get('community_type') == undefined) {
+        if (!cookie.get('community_type')) {
             document.querySelector('#app').style = 'justify-content: center'
             this.currentState = 'choose-worker';
         }
@@ -38,8 +38,8 @@ export default {
             document.querySelector('#app').style = null
             this.currentState = 'choose-community-id'
         },
-        chooseCommunityIdHandler(event) {
-            this.$emit('registrationCompleteEvent', event);
+        chooseCommunityIdHandler() {
+            this.$emit('registrationCompleteEvent', 'main-tab');
         } 
     },
 }

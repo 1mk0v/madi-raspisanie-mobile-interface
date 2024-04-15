@@ -9,11 +9,12 @@ export default class Cookie {
     }
 
     get(string) {
-        return this.cookie[string]
+        return (this.cookie[string]) ? decodeURI(this.cookie[string]) : this.cookie[string]
     }
 
     append(name, value) {
-        document.cookie = `${name}=${value}`
+        let encodeValue = encodeURIComponent(value)
+        document.cookie = `${name}=${encodeValue}`
     }
 
     remove(name) {

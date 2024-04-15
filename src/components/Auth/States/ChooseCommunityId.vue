@@ -69,9 +69,8 @@ export default {
     methods: {
         choosedId(event) {
             const cookie = new Cookie();
-            alert(encodeURIComponent(event.value));
             cookie.append('community_id', event.id);
-            cookie.append('community_value', encodeURIComponent(event.value));
+            cookie.append('community_value', event.value);
             this.$emit('choosedIdEvent', event);
         },
         getCheckedData(data) {

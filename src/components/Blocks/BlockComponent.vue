@@ -72,9 +72,9 @@
     flex-direction: column;
   }
   
-  .key-container:hover {
+  .key-container:active {
       background: rgba(0,0,0,0.15);
-      transition: all 300ms linear;
+      transition: all 100ms linear;
   }
   
   .key-container-none-button {

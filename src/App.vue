@@ -2,7 +2,9 @@
     <AuthComponent
       @registrationCompleteEvent="changeTab"
       v-if="currentTab == 'auth-tab'"></AuthComponent>
-    <MainComponent v-if="currentTab == 'main-tab'"></MainComponent>
+    <MainComponent 
+      @exitEvent="changeTab"
+      v-if="currentTab == 'main-tab'"></MainComponent>
     
 </template>
 
@@ -22,16 +24,13 @@ export default {
       this.currentTab = 'banner'
     }
     const cookie = new Cookie();
-    if (
-      cookie.get('community_id') == undefined 
-      || cookie.get('community_type') == undefined
-      || cookie.get('community_value') == undefined) {
+    if (!cookie.get('community_id') || !cookie.get('community_type') || !cookie.get('community_value')) {
       this.currentTab = 'auth-tab'
     }
   },
   methods: {
-    changeTab() {
-      this.currentTab = 'main-tab'
+    changeTab(data) {
+      this.currentTab = data
     }
   },
   components: {

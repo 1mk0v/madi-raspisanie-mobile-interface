@@ -29,7 +29,7 @@ export default {
     methods: {
         chooseWorker(data) {
             const cookie = new Cookie();
-            cookie.append('community_type',data.value);
+            cookie.append('community_type', data.value);
             this.$emit('choosedCommunity', data);
         }
     }
