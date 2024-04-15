@@ -10,7 +10,9 @@
             </BlockComponent>
             <span>{{ weekdayType }}</span>
         </div>
-        <CalendarComponent></CalendarComponent>
+        <CalendarComponent
+            @changeWeekTypeEvent="changeWeekTypeEvent">
+        </CalendarComponent>
     </div>
 </template>
 
@@ -34,6 +36,10 @@ export default {
     },
     emits:['exitEvent'],
     methods: {
+        changeWeekTypeEvent(event) {
+            console.log(event)
+            this.weekdayType = (this.weekdayType == 'Знаменатель') ? 'Числитель' : 'Знаменатель'
+        },
         getWeekType() {
             let date = new Date()
             let startDate = new Date(date.getFullYear(), 0, 1);
