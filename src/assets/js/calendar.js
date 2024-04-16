@@ -1,15 +1,6 @@
 export default class Calendar {
     
     constructor() {
-        this.__weekdays = {
-            1: 'Пн',
-            2: 'Вт',
-            3: 'Ср',
-            4: 'Чт',
-            5: 'Пт',
-            6: 'Сб',
-            0: 'Вс'
-        }
         this.item = 0
         this.calendar = this.__generateCalendar()
     }
@@ -30,8 +21,9 @@ export default class Calendar {
                 startCurrentWeekDay.getDate() + item
             )
             result.push({
-                weekday: this.__weekdays[newDate.getDay()],
+                weekday: newDate.getDay(),
                 day: newDate.getDate(),
+                isChoosed: (currentDate.toLocaleDateString() == newDate.toLocaleDateString()) ? true : false,
                 isCurrentDay: (currentDate.toLocaleDateString() == newDate.toLocaleDateString()) ? true : false
             })
         }

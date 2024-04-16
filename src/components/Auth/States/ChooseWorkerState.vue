@@ -1,6 +1,6 @@
 <template>
     <div id='choosing-state' class="glassmorphizm">
-        <div>Кто вы?</div>
+        <div>Кто Вы?</div>
         <CustomButton
             @clickCustomButtonEvent="chooseWorker"
             id="student-button"

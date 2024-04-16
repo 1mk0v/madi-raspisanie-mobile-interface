@@ -6,15 +6,22 @@
                 :key="index">
                 <BlockComponent
                     v-for="date, index in dates"
+                    :nameId="date.day"
                     block-padding="5px"
                     border-radius="5px" 
                     :is-button="true"
-                    @click-component-event="console.log('active')"
-                    class="day-container" 
-                    :class="{'active': date.isCurrentDay}"
+                    @click-component-event="{
+                        deleteAllChoosed();
+                        date.isChoosed = true;
+                        this.$emit('changeDayEvent', date)
+                    }"
+                    class="day-container"
+                    :class="{
+                        'active': date.isCurrentDay,
+                        'choosed': date.isChoosed && !date.isCurrentDay}"
                     :key="index">
                     <span>{{ date.day }}</span>
-                    <span>{{ date.weekday }}</span>
+                    <span class="weekday">{{ weekdays[date.weekday] }}</span>
                 </BlockComponent>
             </div>
         </div>
@@ -50,11 +57,27 @@ export default {
     },
     data() {
         return {
+            weekdays: {
+            1: 'Пн',
+            2: 'Вт',
+            3: 'Ср',
+            4: 'Чт',
+            5: 'Пт',
+            6: 'Сб',
+            0: 'Вс'
+        },
             calendar: new Calendar()
         }
     },
-    emits: ['changeWeekTypeEvent'],
+    emits: ['changeWeekTypeEvent', 'changeDayEvent'],
     methods: {
+        deleteAllChoosed() {
+            for (let date of this.calendar.calendar) {
+                date.forEach((element) => {
+                    element.isChoosed = false;
+                })
+            }
+        },
         generateDates(swiper) {
             if (swiper.swipeDirection == 'next') {
                 this.calendar.item++

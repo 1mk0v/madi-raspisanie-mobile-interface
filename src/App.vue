@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     changeTab(data) {
-      this.currentTab = data
+      this.currentTab = data;
     }
   },
   components: {
