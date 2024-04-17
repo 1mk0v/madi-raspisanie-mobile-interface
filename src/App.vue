@@ -5,7 +5,6 @@
     <MainComponent 
       @exitEvent="changeTab"
       v-if="currentTab == 'main-tab'"></MainComponent>
-    
 </template>
 
 <script>

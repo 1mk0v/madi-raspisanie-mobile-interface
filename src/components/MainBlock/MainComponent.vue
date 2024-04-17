@@ -1,9 +1,9 @@
 <template>
     <HeaderComponent
         @exitEvent="exitHandler"
-        @changeDayEvent="console.log('dayEvent')"></HeaderComponent>
+        @changeDayEvent="changeDayHandler"></HeaderComponent>
     <div style="padding: 5px;">
-        data
+        {{ weekday }} {{ weekdayType }}
     </div>
 </template>
 
@@ -11,11 +11,23 @@
 import HeaderComponent from '@/components/Header/HeaderComponent.vue'
 export default {
     name: 'MainComponent',
+    data() {
+        return {
+            weekday: 0,
+            weekdayType: 0
+        }
+    },
     components: {
         HeaderComponent
     },
+    created() {
+    },
     emits:['exitEvent'],
     methods: {
+        changeDayHandler(event) {
+            this.weekday = event.weekday;
+            this.weekdayType = event.weekdayType;
+        },
         exitHandler() {
             this.$emit('exitEvent', 'auth-tab')
         }

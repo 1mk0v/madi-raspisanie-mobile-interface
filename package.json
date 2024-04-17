@@ -15,6 +15,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "core-js": "^3.8.3",
     "fuse.js": "^7.0.0",
+    "swiper": "^11.1.1",
     "vue": "^3.2.13"
   },
   "devDependencies": {

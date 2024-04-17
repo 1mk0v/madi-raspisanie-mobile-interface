@@ -44,6 +44,7 @@ export default {
             element.forEach((element) => { 
                 if (element.isCurrentDay) { 
                     swiper.slideTo(index, 400, false);
+                    this.$emit('changeDayEvent', element)
                 }
             })
         });

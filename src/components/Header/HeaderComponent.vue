@@ -31,15 +31,16 @@ export default {
     },
     created() {
         const cookie = new Cookie();
-        this.name = decodeURI(cookie.get('community_value'));
+        this.name = cookie.get('community_value');
         this.weekdayType = this.getWeekType();
         this.timerIntervalId = setInterval(this.getWeekType, 5 * 60 * 1000);
     },
     emits:['exitEvent', 'changeDayEvent'],
     methods: {
         changeDayHandler(event) {
-            console.log(event.weekday, this.weekdayType)
-            this.$emit('changeDayEvent', event)
+            let newObject = Object.assign(event)
+            newObject['weekdayType'] = Number((this.weekdayType == 'Знаменатель')) 
+            this.$emit('changeDayEvent', newObject)
         },
         changeWeekTypeEvent() {
             this.weekdayType = (this.weekdayType == 'Знаменатель') ? 'Числитель' : 'Знаменатель'
