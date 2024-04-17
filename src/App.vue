@@ -5,6 +5,7 @@
     <MainComponent 
       @exitEvent="changeTab"
       v-if="currentTab == 'main-tab'"></MainComponent>
+    <div v-if="currentTab == 'banner'">BANNER</div>
 </template>
 
 <script>
@@ -19,12 +20,12 @@ export default {
     }
   },
   created() {
-    if (window.innerWidth > 500) {
-      this.currentTab = 'banner'
-    }
     const cookie = new Cookie();
     if (!cookie.get('community_id') || !cookie.get('community_type') || !cookie.get('community_value')) {
       this.currentTab = 'auth-tab'
+    }
+    if (window.innerWidth > 500) {
+      this.currentTab = 'banner'
     }
   },
   methods: {

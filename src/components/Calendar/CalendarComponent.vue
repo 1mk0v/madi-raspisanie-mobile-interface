@@ -35,6 +35,20 @@ import 'swiper/css';
 import BlockComponent from '../Blocks/BlockComponent.vue';
 export default {
     name: 'CalendarComponent',
+    data() {
+        return {
+            weekdays: {
+            1: 'Пн',
+            2: 'Вт',
+            3: 'Ср',
+            4: 'Чт',
+            5: 'Пт',
+            6: 'Сб',
+            0: 'Вс'
+        },
+            calendar: new Calendar()
+        }
+    },
     mounted() {
         const swiper = new Swiper('.swiper', {
             speed: 400,
@@ -50,25 +64,10 @@ export default {
         });
         const todoList = (event) => {
             this.changeWeekTypeValue(event.swipeDirection)
-            // this.generateDates(event)
         }
         swiper.on('slideChange', function (event) {
             todoList(event)
         });
-    },
-    data() {
-        return {
-            weekdays: {
-            1: 'Пн',
-            2: 'Вт',
-            3: 'Ср',
-            4: 'Чт',
-            5: 'Пт',
-            6: 'Сб',
-            0: 'Вс'
-        },
-            calendar: new Calendar()
-        }
     },
     emits: ['changeWeekTypeEvent', 'changeDayEvent'],
     methods: {
@@ -137,8 +136,8 @@ export default {
 }
 
 .weekday {
-    font-weight: 200;
-    font-size: 14px;
-    line-height: 17px;
+    font-weight: var(--small-font-weight);
+    font-size: var(--small-font-size);
+    line-height: var(--small-line-height);
 }
 </style>

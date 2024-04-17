@@ -21,8 +21,11 @@ export default class Calendar {
                 startCurrentWeekDay.getDate() + item
             )
             result.push({
-                weekday: newDate.getDay(),
+                date: newDate,
                 day: newDate.getDate(),
+                dateString: newDate.toLocaleDateString(),
+                weekday: newDate.getDay(),
+                isImportant: false,
                 isChoosed: (currentDate.toLocaleDateString() == newDate.toLocaleDateString()) ? true : false,
                 isCurrentDay: (currentDate.toLocaleDateString() == newDate.toLocaleDateString()) ? true : false
             })

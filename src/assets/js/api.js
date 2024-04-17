@@ -5,7 +5,7 @@ export default class API {
     }
 
     constructor(path) {
-        this.host = `http://127.0.0.1:8888` + path
+        this.host = `http://192.168.0.152:8888` + path
     }
 
     async get() {
