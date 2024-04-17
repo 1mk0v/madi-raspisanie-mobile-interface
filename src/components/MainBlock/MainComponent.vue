@@ -3,17 +3,41 @@
         <div id="info-container">
             <BlockComponent text-weight="500" block-padding="0px" :is-button="true"
                 @click-component-event="exitHandler">
-                {{ name }}
+                {{ communityValue }}
             </BlockComponent>
-            <span>{{ currentWeekdayType }}</span>
+            <div style="overflow: hidden; height: var(--default-line-height); text-align: right;">
+                <Transition name="slide-up">
+                    <BlockComponent block-padding="0px" :is-button="true"
+                        @click-component-event="this.isWeekShow = !this.isWeekShow" v-if="this.isWeekShow">
+                        {{ currentWeekdayType }}
+                    </BlockComponent>
+                    <BlockComponent block-padding="0px" :is-button="true"
+                        @click-component-event="this.isWeekShow = !this.isWeekShow" v-else>
+                        {{ months[monthNum] }}
+                    </BlockComponent>
+                </Transition>
+            </div>
         </div>
-        <CalendarComponent @changeDayEvent="changeDayHandler" @changeWeekTypeEvent="changeWeekTypeEvent">
+        <CalendarComponent
+            :new-choosed-num="choosedWeekdayNum"
+            @changeDayEvent="changeDayHandler"
+            @changeWeekTypeEvent="changeWeekTypeEvent"
+            @created-calendar="calendarCreatedHandler">
         </CalendarComponent>
     </div>
-    <div class="schedule">
-        <EventBlock v-for="event, index in currentSchedule" :eventData="event" :key="index + event.weekday">
-        </EventBlock>
-    </div>
+
+    <!-- <div class="scheduleSwiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" v-for="weekday, index in this.currentCalendarWeek" :key="index"> -->
+                <div class="schedule">
+                    <EventBlock v-for="event, index in currentSchedule()" :eventData="event"
+                        :key="index + event.weekday">
+                    </EventBlock>
+                </div>
+            <!-- </div>
+        </div>
+    </div> -->
+
 </template>
 
 <script>
@@ -22,30 +46,30 @@ import Cookie from '@/assets/js/cookie';
 import BlockComponent from '@/components/Blocks/BlockComponent.vue';
 import CalendarComponent from '@/components/Calendar/CalendarComponent.vue';
 import EventBlock from '@/components/EventBlock/EventBlock.vue'
-
+import constansts from '@/assets/js/appConst'
+// import Swiper from 'swiper';
 export default {
     name: 'MainComponent',
     data() {
         return {
-            name: '',
-            weekdayNumber: 0,
+            scheduleSwiper: '',
+            communityValue: 'None',
+            monthNum: 0,
+            months: constansts.months,
+            weekdayNum: 0,
+            weekdays: constansts.fullWeekdays,
+            isWeekShow: true,
             currentWeekdayType: '',
             choosedWeekdayType: '',
-            weekdays: {
-                0: 'Воскресенье',
-                1: 'Понедельник',
-                2: 'Вторник',
-                3: 'Среда',
-                4: 'Четверг',
-                5: 'Пятница',
-                6: 'Суббота'
-            },
-            schedule: []
+            choosedWeekdayNum: 0,
+            schedule: [],
+            currentCalendarWeek: [],
+            calendar: [],
         }
     },
     created() {
         const cookie = new Cookie();
-        this.name = cookie.get('community_value');
+        this.communityValue = cookie.get('community_value');
         let community_type = cookie.get('community_type');
         let community_id = cookie.get('community_id')
         const api = new API(`/event/lessons/${community_type}/${community_id}`);
@@ -61,13 +85,57 @@ export default {
             }
         )
     },
+    mounted() {
+        // const swiper = new Swiper('.scheduleSwiper', {})
+        // const todoList = (event) => {
+        //     this.choosedWeekdayNum = event.activeIndex
+        // }
+        // swiper.on('slideChange', function (event) {
+        //     todoList(event)
+        // })
+        // this.scheduleSwiper = swiper
+    },
+    updated() {
+        // this.scheduleSwiper.update();
+    },
+    watch: {
+        scheduleSwiper: {
+            handler() {
+                let flag = 0
+                this.currentCalendarWeek.forEach(
+                    (el) => {
+                        if (el.isCurrentDay) {
+                            flag = 1;
+                            this.scheduleSwiper.slideTo(el.index, 400, false);
+                            this.choosedWeekdayNum = el.index
+                        }
+                    }
+                )
+                if (!flag) { this.scheduleSwiper.slideTo(1, 400, false); }
+            }
+        }
+    },
     emits: ['exitEvent', 'changeDayEvent'],
     methods: {
+        calendarCreatedHandler(calendar) {
+            let currentWeek = []
+            calendar.calendar[2].forEach(
+                (el) => {
+                    currentWeek.push(el)
+                }
+            )
+            this.currentCalendarWeek = currentWeek;
+            this.monthNum = currentWeek[0].date.getMonth();
+        },
         changeDayHandler(event) {
             this.choosedWeekdayType = this.currentWeekdayType;
-            this.weekdayNumber = event.weekday;
+            this.weekdayNum = event.weekday;
+            if (this.scheduleSwiper) {
+                this.scheduleSwiper.slideTo(event.index, 400)
+            }
         },
-        changeWeekTypeEvent() {
+        changeWeekTypeEvent(event) {
+            this.monthNum = event[0].date.getMonth()
             this.currentWeekdayType = (this.currentWeekdayType == 'Знаменатель') ? 'Числитель' : 'Знаменатель';
         },
         getWeekType() {
@@ -83,9 +151,7 @@ export default {
             cookie.remove('community_type');
             cookie.remove('community_value');
             this.$emit('exitEvent', 'auth-tab');
-        }
-    },
-    computed: {
+        },
         currentSchedule() {
             const frequency = {
                 'Числитель': ['Числитель', 'Числ. 1 раз в месяц', 'Еженедельно'],
@@ -93,7 +159,7 @@ export default {
             }
             let newSchedule = []
             this.schedule.forEach((event) => {
-                if (frequency[this.choosedWeekdayType].includes(event.frequency) && event.weekday == this.weekdays[this.weekdayNumber]) {
+                if (frequency[this.choosedWeekdayType].includes(event.frequency) && event.weekday == this.weekdays[this.weekdayNum]) {
                     newSchedule.push(event);
                 }
             })
@@ -107,6 +173,21 @@ export default {
 </script>
 
 <style scoped>
+.slide-up-enter-active,
+.slide-up-leave-active {
+    transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+    opacity: 0;
+    transform: translateX(100px);
+}
+
+.slide-up-leave-to {
+    opacity: 0;
+    transform: translateX(-100px);
+}
+
 #info-container {
     display: flex;
     justify-content: space-between;
@@ -115,9 +196,13 @@ export default {
 .schedule {
     display: flex;
     overflow: auto;
-    padding: calc(var(--app-indent)/2);
+    margin: calc(var(--app-indent)/2);
     flex-direction: column;
     gap: calc(var(--app-indent)/2);
+}
+
+.scheduleSwiper {
+    height: 100%;
 }
 
 #header {

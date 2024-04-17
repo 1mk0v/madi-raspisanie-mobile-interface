@@ -28,6 +28,7 @@ body {
     font-family: "Inter", sans-serif;
     font-size: var(--default-font-size);
     font-weight: var(--default-font-weight);
+    -webkit-tap-highlight-color:none;
 }
 
 .glassmorphizm {

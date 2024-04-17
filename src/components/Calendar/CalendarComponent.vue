@@ -1,25 +1,19 @@
 <template>
     <div class="swiper">
         <div class="swiper-wrapper calendar-container">
-            <div class="swiper-slide"
-                v-for="dates, index in calendar.calendar"
-                :key="index">
-                <BlockComponent
-                    v-for="date, index in dates"
-                    :nameId="date.day"
-                    block-padding="5px"
-                    border-radius="5px" 
+            <div class="swiper-slide" v-for="dates, index in calendar.calendar" :key="index">
+                <BlockComponent v-for="date, index in dates" :nameId="date.day" block-padding="5px" border-radius="5px"
                     :is-button="true"
+                    :key="index" 
                     @click-component-event="{
                         deleteAllChoosed();
                         date.isChoosed = true;
                         this.$emit('changeDayEvent', date)
-                    }"
-                    class="day-container"
-                    :class="{
+                    }" 
+                    class="day-container" :class="{
                         'active': date.isCurrentDay,
-                        'choosed': date.isChoosed && !date.isCurrentDay}"
-                    :key="index">
+                        'choosed': date.isChoosed && !date.isCurrentDay
+                    }">
                     <span>{{ date.day }}</span>
                     <span class="weekday">{{ weekdays[date.weekday] }}</span>
                 </BlockComponent>
@@ -30,23 +24,27 @@
 
 <script>
 import { Swiper } from 'swiper';
+import weekdays from '@/assets/js/appConst.js';
 import Calendar from '@/assets/js/calendar';
-import 'swiper/css';
 import BlockComponent from '../Blocks/BlockComponent.vue';
+import 'swiper/css';
+
 export default {
     name: 'CalendarComponent',
     data() {
         return {
-            weekdays: {
-            1: 'Пн',
-            2: 'Вт',
-            3: 'Ср',
-            4: 'Чт',
-            5: 'Пт',
-            6: 'Сб',
-            0: 'Вс'
-        },
+            weekdays: weekdays.weekdays,
             calendar: new Calendar()
+        }
+    },
+    props: {
+        newChoosedNum:Number
+    },
+    watch: {
+        newChoosedNum: {
+            handler(value) {
+                console.log(value, 'choosedNum')
+            }
         }
     },
     mounted() {
@@ -54,22 +52,24 @@ export default {
             speed: 400,
             spaceBetween: 100
         });
-        this.calendar.calendar.forEach((element,index) => {
-            element.forEach((element) => { 
-                if (element.isCurrentDay) { 
+        this.calendar.calendar.forEach((element, index) => {
+            element.forEach((element) => {
+                if (element.isCurrentDay) {
                     swiper.slideTo(index, 400, false);
                     this.$emit('changeDayEvent', element)
                 }
             })
         });
         const todoList = (event) => {
-            this.changeWeekTypeValue(event.swipeDirection)
+            this.$emit('changeWeekTypeEvent', this.calendar.calendar[event.activeIndex])
+            this.generateDates(event)
         }
         swiper.on('slideChange', function (event) {
             todoList(event)
         });
+        this.$emit('createdCalendar', this.calendar)
     },
-    emits: ['changeWeekTypeEvent', 'changeDayEvent'],
+    emits: ['changeWeekTypeEvent', 'changeDayEvent', 'createdCalendar'],
     methods: {
         deleteAllChoosed() {
             for (let date of this.calendar.calendar) {
@@ -79,21 +79,17 @@ export default {
             }
         },
         generateDates(swiper) {
-            if (swiper.swipeDirection == 'next') {
-                this.calendar.item++
-                let newData = this.calendar.generateWeekCalendar(this.calendar.item + 1)
-                this.calendar.calendar.shift()
-                this.calendar.calendar.push(newData)
-            } else if (swiper.swipeDirection == 'prev') {
-                this.calendar.item--
-                let newData = this.calendar.generateWeekCalendar(this.calendar.item - 1);
-                this.calendar.calendar.pop()
-                this.calendar.calendar.unshift(newData)
+            let indexOfMiddleSlide = Math.floor(swiper.slides.length / 2)
+            if (indexOfMiddleSlide - Math.abs(swiper.activeIndex - indexOfMiddleSlide) < 2) {
+                if (swiper.swipeDirection == 'next') {
+                    this.calendar.item++
+                    let newData = this.calendar.generateWeekCalendar(this.calendar.item + 2)
+                    this.calendar.calendar.push(newData)
+                }
+                swiper.update()
             }
+
         },
-        changeWeekTypeValue: function(data) {
-            this.$emit('changeWeekTypeEvent', data)
-        }
     },
     components: {
         BlockComponent

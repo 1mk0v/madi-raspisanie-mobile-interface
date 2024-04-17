@@ -11,13 +11,6 @@
             </div>
         </div>
         <div id="event-params">
-            <div id="community" class="info-container" v-if="community">
-                <div class="ico">
-                    <font-awesome-icon v-if="isGroup" icon="fa-solid fa-users" style="color: #ffffff;" />
-                    <font-awesome-icon v-else icon="fa-solid fa-user" style="color: #ffffff;" />
-                </div>
-                <div class="value">{{community}}</div>
-            </div>
             <div class="info-container" v-if="auditorium">
                 <div class="ico">
                     <font-awesome-icon icon="fa-solid fa-door-closed" style="color: #ffffff;" />
@@ -25,6 +18,13 @@
                 <div class="value">
                     {{ this.eventData.auditorium}}
                 </div>
+            </div>
+            <div id="community" class="info-container" v-if="community">
+                <div class="ico">
+                    <font-awesome-icon v-if="isGroup" icon="fa-solid fa-users" style="color: #ffffff;" />
+                    <font-awesome-icon v-else icon="fa-solid fa-user" style="color: #ffffff;" />
+                </div>
+                <div class="value">{{community}}</div>
             </div>
         </div>
     </div>

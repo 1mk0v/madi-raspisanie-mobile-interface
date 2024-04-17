@@ -21,6 +21,7 @@ export default class Calendar {
                 startCurrentWeekDay.getDate() + item
             )
             result.push({
+                index: item,
                 date: newDate,
                 day: newDate.getDate(),
                 dateString: newDate.toLocaleDateString(),
