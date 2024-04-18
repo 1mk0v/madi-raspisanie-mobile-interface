@@ -2,15 +2,20 @@
     <div class="swiper">
         <div class="swiper-wrapper calendar-container">
             <div class="swiper-slide" v-for="dates, index in calendar.calendar" :key="index">
-                <BlockComponent v-for="date, index in dates" :nameId="date.day" block-padding="5px" border-radius="5px"
+                <BlockComponent 
+                    v-for="date, index in dates"
+                    block-padding="5px" 
+                    border-radius="5px"
+                    class="day-container" 
+                    :nameId="date.day" 
                     :is-button="true"
                     :key="index" 
-                    @click-component-event="{
-                        deleteAllChoosed();
+                    @click-component-event="{ 
+                        deleteAllChoosed(); 
                         date.isChoosed = true;
                         this.$emit('changeDayEvent', date)
-                    }" 
-                    class="day-container" :class="{
+                    }"  
+                    :class="{
                         'active': date.isCurrentDay,
                         'choosed': date.isChoosed && !date.isCurrentDay
                     }">
@@ -33,6 +38,7 @@ export default {
     name: 'CalendarComponent',
     data() {
         return {
+            calendarSwiper: '',
             weekdays: weekdays.weekdays,
             calendar: new Calendar()
         }
@@ -43,7 +49,7 @@ export default {
     watch: {
         newChoosedNum: {
             handler(value) {
-                console.log(value, 'choosedNum')
+               console.log(value)
             }
         }
     },
@@ -52,14 +58,16 @@ export default {
             speed: 400,
             spaceBetween: 100
         });
+        let item = 0
         this.calendar.calendar.forEach((element, index) => {
             element.forEach((element) => {
                 if (element.isCurrentDay) {
                     swiper.slideTo(index, 400, false);
-                    this.$emit('changeDayEvent', element)
+                    item = index
                 }
             })
         });
+        this.calendarSwiper = swiper
         const todoList = (event) => {
             this.$emit('changeWeekTypeEvent', this.calendar.calendar[event.activeIndex])
             this.generateDates(event)
@@ -67,7 +75,7 @@ export default {
         swiper.on('slideChange', function (event) {
             todoList(event)
         });
-        this.$emit('createdCalendar', this.calendar)
+        this.$emit('createdCalendar', this.calendar.calendar[item])
     },
     emits: ['changeWeekTypeEvent', 'changeDayEvent', 'createdCalendar'],
     methods: {

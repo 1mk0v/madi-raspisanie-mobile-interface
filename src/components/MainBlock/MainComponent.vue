@@ -1,140 +1,106 @@
 <template>
     <div id="header" class="glassmorphizm">
         <div id="info-container">
-            <BlockComponent text-weight="500" block-padding="0px" :is-button="true"
-                @click-component-event="exitHandler">
-                {{ communityValue }}
-            </BlockComponent>
+            <div @click="exitHandler" style="font-weight: 500;">
+                {{ this.cookie.get('community_value') }}
+            </div>
             <div style="overflow: hidden; height: var(--default-line-height); text-align: right;">
                 <Transition name="slide-up">
-                    <BlockComponent block-padding="0px" :is-button="true"
-                        @click-component-event="this.isWeekShow = !this.isWeekShow" v-if="this.isWeekShow">
-                        {{ currentWeekdayType }}
-                    </BlockComponent>
-                    <BlockComponent block-padding="0px" :is-button="true"
-                        @click-component-event="this.isWeekShow = !this.isWeekShow" v-else>
-                        {{ months[monthNum] }}
-                    </BlockComponent>
+                    <div @click="this.showWeek = !this.showWeek" v-if="this.showWeek">{{ currentWeekdayType }}</div>
+                    <div @click="this.showWeek = !this.showWeek" v-else>{{ month }}</div>
                 </Transition>
             </div>
         </div>
-        <CalendarComponent
-            :new-choosed-num="choosedWeekdayNum"
+        <CalendarComponent 
+            @created-calendar="createdCalendarHandler" 
             @changeDayEvent="changeDayHandler"
-            @changeWeekTypeEvent="changeWeekTypeEvent"
-            @created-calendar="calendarCreatedHandler">
+            @changeWeekTypeEvent="changeWeekTypeHandler" 
+            :new-choosed-num="weekdayNum">
         </CalendarComponent>
     </div>
 
-    <!-- <div class="scheduleSwiper">
+    <div class="scheduleSwiper">
         <div class="swiper-wrapper">
-            <div class="swiper-slide" v-for="weekday, index in this.currentCalendarWeek" :key="index"> -->
+            <div class="swiper-slide" v-for="weekday, index in currentCalendarWeek" :key="index">
                 <div class="schedule">
-                    <EventBlock v-for="event, index in currentSchedule()" :eventData="event"
+                    <EventBlock v-for="event, index in currentSchedule(weekday)" 
+                        :eventData="event"
                         :key="index + event.weekday">
                     </EventBlock>
                 </div>
-            <!-- </div>
+            </div>
         </div>
-    </div> -->
+    </div>
 
 </template>
 
 <script>
 import API from '@/assets/js/api'
 import Cookie from '@/assets/js/cookie';
-import BlockComponent from '@/components/Blocks/BlockComponent.vue';
 import CalendarComponent from '@/components/Calendar/CalendarComponent.vue';
 import EventBlock from '@/components/EventBlock/EventBlock.vue'
 import constansts from '@/assets/js/appConst'
-// import Swiper from 'swiper';
+import Swiper from 'swiper';
 export default {
     name: 'MainComponent',
     data() {
         return {
             scheduleSwiper: '',
+            cookie: new Cookie(),
             communityValue: 'None',
+            currentWeekdayType: this.getWeekType(),
             monthNum: 0,
-            months: constansts.months,
             weekdayNum: 0,
-            weekdays: constansts.fullWeekdays,
-            isWeekShow: true,
-            currentWeekdayType: '',
-            choosedWeekdayType: '',
-            choosedWeekdayNum: 0,
-            schedule: [],
+            weekdayType: this.getWeekType(),
+            showWeek: true,
             currentCalendarWeek: [],
-            calendar: [],
+            schedule: [],
+            consts: {
+                months: constansts.months,
+                weekdays: constansts.fullWeekdays,
+            }
         }
     },
-    created() {
-        const cookie = new Cookie();
-        this.communityValue = cookie.get('community_value');
-        let community_type = cookie.get('community_type');
-        let community_id = cookie.get('community_id')
-        const api = new API(`/event/lessons/${community_type}/${community_id}`);
-        this.currentWeekdayType = this.getWeekType();
-        this.choosedWeekdayType = this.currentWeekdayType;
-        api.get().then(
-            (data) => {
-                this.schedule = data.data;
-            }
-        ).catch(
-            (error) => {
-                console.log(error)
-            }
-        )
-    },
-    mounted() {
-        // const swiper = new Swiper('.scheduleSwiper', {})
-        // const todoList = (event) => {
-        //     this.choosedWeekdayNum = event.activeIndex
-        // }
-        // swiper.on('slideChange', function (event) {
-        //     todoList(event)
-        // })
-        // this.scheduleSwiper = swiper
-    },
     updated() {
-        // this.scheduleSwiper.update();
+        this.scheduleSwiper.update();
     },
     watch: {
         scheduleSwiper: {
-            handler() {
-                let flag = 0
-                this.currentCalendarWeek.forEach(
-                    (el) => {
-                        if (el.isCurrentDay) {
-                            flag = 1;
-                            this.scheduleSwiper.slideTo(el.index, 400, false);
-                            this.choosedWeekdayNum = el.index
-                        }
-                    }
-                )
-                if (!flag) { this.scheduleSwiper.slideTo(1, 400, false); }
+            handler(value) {
+                value.slideTo(this.weekdayNum, 400)
             }
         }
     },
     emits: ['exitEvent', 'changeDayEvent'],
     methods: {
-        calendarCreatedHandler(calendar) {
-            let currentWeek = []
-            calendar.calendar[2].forEach(
-                (el) => {
-                    currentWeek.push(el)
+        createdCalendarHandler(event) {
+            const swiper = new Swiper('.scheduleSwiper', {});
+            swiper.on('slideChange', (event) => {
+                if (event.swipeDirection == 'next') {
+                    this.weekdayNum++
+                } else if (event.swipeDirection == 'prev') {
+                    this.weekdayNum--
                 }
+            })
+            const api = new API(`/event/lessons/${this.cookie.get('community_type')}/${this.cookie.get('community_id')}`);
+            api.get().then(
+                (data) => { 
+                    this.schedule = data.data;
+                    this.currentCalendarWeek = event;
+                }
+            ).catch(
+                (error) => { console.log(error) }
             )
-            this.currentCalendarWeek = currentWeek;
-            this.monthNum = currentWeek[0].date.getMonth();
+            this.scheduleSwiper = swiper;
         },
         changeDayHandler(event) {
-            this.choosedWeekdayType = this.currentWeekdayType;
+            this.monthNum = event.date.getMonth();
+            this.weekdayType = this.currentWeekdayType;
             this.weekdayNum = event.weekday;
-            if (this.scheduleSwiper) {
-                this.scheduleSwiper.slideTo(event.index, 400)
-            }
+            this.scheduleSwiper.slideTo(event.index, 400);
         },
-        changeWeekTypeEvent(event) {
+        changeWeekTypeHandler(event) {
+            this.currentCalendarWeek = event
             this.monthNum = event[0].date.getMonth()
             this.currentWeekdayType = (this.currentWeekdayType == 'Знаменатель') ? 'Числитель' : 'Знаменатель';
         },
@@ -146,28 +112,35 @@ export default {
             return (weekNumber % 2) ? 'Знаменатель' : 'Числитель';
         },
         exitHandler() {
-            const cookie = new Cookie();
-            cookie.remove('community_id');
-            cookie.remove('community_type');
-            cookie.remove('community_value');
+            this.cookie.remove('community_id');
+            this.cookie.remove('community_type');
+            this.cookie.remove('community_value');
             this.$emit('exitEvent', 'auth-tab');
         },
-        currentSchedule() {
+        currentSchedule(weekday) {
             const frequency = {
                 'Числитель': ['Числитель', 'Числ. 1 раз в месяц', 'Еженедельно'],
                 'Знаменатель': ['Знаменатель', 'Знам. 1 раз в месяц', 'Еженедельно'],
             }
             let newSchedule = []
             this.schedule.forEach((event) => {
-                if (frequency[this.choosedWeekdayType].includes(event.frequency) && event.weekday == this.weekdays[this.weekdayNum]) {
+                if (frequency[this.weekdayType].includes(event.frequency) && event.weekday == this.consts.weekdays[weekday.weekday]) {
                     newSchedule.push(event);
                 }
             })
             return newSchedule
         }
     },
+    computed: {
+        weekday() {
+            return this.consts.weekdays[this.weekdayNum]
+        },
+        month() {
+            return this.consts.months[this.monthNum]
+        }
+    },
     components: {
-        CalendarComponent, BlockComponent, EventBlock
+        CalendarComponent, EventBlock
     }
 }
 </script>
