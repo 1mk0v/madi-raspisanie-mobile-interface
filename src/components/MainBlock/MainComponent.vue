@@ -49,8 +49,8 @@ export default {
             cookie: new Cookie(),
             communityValue: 'None',
             currentWeekdayType: this.getWeekType(),
-            monthNum: 0,
-            weekdayNum: 0,
+            monthNum: new Date().getMonth(),
+            weekdayNum: new Date().getDay() - 1,
             weekdayType: this.getWeekType(),
             showWeek: true,
             currentCalendarWeek: [],
@@ -74,14 +74,16 @@ export default {
     emits: ['exitEvent', 'changeDayEvent'],
     methods: {
         createdCalendarHandler(event) {
-            const swiper = new Swiper('.scheduleSwiper', {});
-            swiper.on('slideChange', (event) => {
-                if (event.swipeDirection == 'next') {
-                    this.weekdayNum++
-                } else if (event.swipeDirection == 'prev') {
-                    this.weekdayNum--
-                }
-            })
+            const swiper = new Swiper('.scheduleSwiper', {
+                allowTouchMove: false
+            });
+            // swiper.on('slideChange', (event) => {
+            //     if (event.swipeDirection == 'next') {
+            //         this.weekdayNum++
+            //     } else if (event.swipeDirection == 'prev') {
+            //         this.weekdayNum--
+            //     }
+            // })
             const api = new API(`/event/lessons/${this.cookie.get('community_type')}/${this.cookie.get('community_id')}`);
             api.get().then(
                 (data) => { 
