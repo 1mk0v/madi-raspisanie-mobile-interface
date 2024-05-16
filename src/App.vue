@@ -42,7 +42,7 @@ export default {
 <style>
 @import url('/src/assets/css/index.css');
 #app {
-  background: url('/src/assets/img/Moskvitch.jpeg') no-repeat center center;
+  background: url('/src/assets/img/screen2.jpeg') no-repeat center center;
   background-size: cover;
   position: fixed;
   top: 0;
