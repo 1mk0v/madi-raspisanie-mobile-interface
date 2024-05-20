@@ -109,7 +109,7 @@ export default {
         getWeekType() {
             let date = new Date();
             let startDate = new Date(date.getFullYear(), 0, 1);
-            let days = Math.floor((date - startDate) / (24 * 60 * 60 * 1000));
+            let days = Math.ceil((date - startDate) / (24 * 60 * 60 * 1000));
             let weekNumber = Math.ceil(days / 7);
             return (weekNumber % 2) ? 'Знаменатель' : 'Числитель';
         },
