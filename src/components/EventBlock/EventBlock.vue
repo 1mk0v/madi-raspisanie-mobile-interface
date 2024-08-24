@@ -63,7 +63,6 @@ export default {
         gap: var(--app-indent);
         padding: var(--app-indent);
         border-radius: 10px;
-        /* background-color: rgba(0,0,0,0.3); */
         background-color: rgba(255,255,255,0.3);
         -webkit-backdrop-filter: blur(var(--app-blur));
         backdrop-filter: blur(var(--app-blur));

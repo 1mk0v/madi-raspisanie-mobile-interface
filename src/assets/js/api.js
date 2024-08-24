@@ -5,7 +5,7 @@ export default class API {
     }
 
     constructor(path) {
-        this.host = `http://194.87.232.107:8888` + path
+        this.host = `https://api.madi-schedule.ru` + path
     }
 
     async get() {

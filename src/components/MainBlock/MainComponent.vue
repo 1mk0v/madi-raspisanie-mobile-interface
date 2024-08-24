@@ -19,7 +19,7 @@
         </CalendarComponent>
     </div>
 
-    <div class="scheduleSwiper">
+    <div class="swiper scheduleSwiper">
         <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="weekday, index in currentCalendarWeek" :key="index">
                 <div class="schedule">
@@ -74,19 +74,11 @@ export default {
     emits: ['exitEvent', 'changeDayEvent'],
     methods: {
         createdCalendarHandler(event) {
-            const swiper = new Swiper('.scheduleSwiper', {
-                allowTouchMove: false
-            });
-            // swiper.on('slideChange', (event) => {
-            //     if (event.swipeDirection == 'next') {
-            //         this.weekdayNum++
-            //     } else if (event.swipeDirection == 'prev') {
-            //         this.weekdayNum--
-            //     }
-            // })
+            const swiper = new Swiper('.scheduleSwiper', { allowTouchMove: false });
             const api = new API(`/event/lessons/${this.cookie.get('community_type')}/${this.cookie.get('community_id')}`);
+            console.log(api.host); 
             api.get().then(
-                (data) => { 
+                (data) => {
                     this.schedule = data.data;
                     this.currentCalendarWeek = event;
                 }
