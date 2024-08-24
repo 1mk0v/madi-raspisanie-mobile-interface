@@ -12,7 +12,7 @@ export default class Calendar {
         let startCurrentWeekDay = new Date(
             date.getFullYear(), 
             date.getMonth(), 
-            (date.getDate()-weekNum)
+            (date.getDate() - weekNum)
         );
         for (let item = 0; item <=6; item++) {
             let newDate = new Date(

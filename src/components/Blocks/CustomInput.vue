@@ -3,12 +3,13 @@
         <label for="input">
             <font-awesome-icon :icon="['fas', 'magnifying-glass']" style="color: #ffffff;" />
         </label>
-        <input class="text-field__input" type="text" name="input" id="input" :placeholder="customPlaceholder"
+        <input type="text" name="input" id="input" :placeholder="customPlaceholder"
             v-model="value">
     </div>
 </template>
 
 <script>
+//Решить проблему поиска (отображает всякий шлак, когда не находит того, что нужно)
 import Fuse from 'fuse.js';
 export default {
     name: 'CustomInput',
@@ -65,8 +66,11 @@ export default {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* стили для input */
-.text-field__input {
+input::placeholder {
+    color: #b1b1b1
+}
+
+input {
     display: block;
     width: 100%;
     outline: none;

@@ -11,6 +11,7 @@
                 </Transition>
             </div>
         </div>
+        <!-- Надо скрепить календарь со свайпером расписания -->
         <CalendarComponent 
             @created-calendar="createdCalendarHandler" 
             @changeDayEvent="changeDayHandler"
@@ -19,7 +20,10 @@
         </CalendarComponent>
     </div>
 
-    <div class="swiper scheduleSwiper">
+    <!-- Надо переделать данный свайпер для расписания на неделе -->
+    <!-- Добавить блок для пустых дней -->
+    <!-- Добавить scroll для блоков, которые переполнились -->
+    <div class="scheduleSwiper">
         <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="weekday, index in currentCalendarWeek" :key="index">
                 <div class="schedule">
@@ -31,7 +35,6 @@
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
