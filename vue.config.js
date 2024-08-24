@@ -18,7 +18,6 @@ module.exports = defineConfig({
       display: 'fullscreen',
       name: 'Расписание МАДИ',
       short_name: 'Расписание',
-    },
-
+    }
   }
 })
