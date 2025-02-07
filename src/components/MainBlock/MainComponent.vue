@@ -22,11 +22,13 @@
     <div class="scheduleSwiper">
         <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="weekday, index in currentCalendarWeek" :key="index">
-                <div class="schedule">
-                    <EventBlock v-for="event, index in currentSchedule(weekday)" 
-                        :eventData="event"
-                        :key="index + event.weekday">
-                    </EventBlock>
+                <div class="schedule-wrapper">
+                    <div class="schedule">
+                        <EventBlock v-for="event, index in currentSchedule(weekday)" 
+                            :eventData="event"
+                            :key="index + event.weekday">
+                        </EventBlock>
+                    </div>
                 </div>
             </div>
         </div>
@@ -111,6 +113,7 @@ export default {
             let startDate = new Date(date.getFullYear(), 0, 1);
             let days = Math.ceil((date - startDate) / (24 * 60 * 60 * 1000));
             let weekNumber = Math.ceil(days / 7);
+            console.log(weekNumber)
             return (weekNumber % 2) ? 'Знаменатель' : 'Числитель';
         },
         exitHandler() {
@@ -170,7 +173,6 @@ export default {
 
 .schedule {
     display: flex;
-    overflow: auto;
     margin: calc(var(--app-indent)/2);
     flex-direction: column;
     gap: calc(var(--app-indent)/2);
@@ -178,6 +180,10 @@ export default {
 
 .scheduleSwiper {
     height: 100%;
+}
+
+.schedule-wrapper {
+    height: 100%; width: 100%; overflow: auto; position: absolute;
 }
 
 #header {

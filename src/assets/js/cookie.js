@@ -14,7 +14,7 @@ export default class Cookie {
 
     append(name, value) {
         let encodeValue = encodeURIComponent(value)
-        document.cookie = `${name}=${encodeValue}`
+        document.cookie = `${name}=${encodeValue}; max-age=${3600*24*30*3}`
     }
 
     remove(name) {

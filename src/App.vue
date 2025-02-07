@@ -5,12 +5,15 @@
     <MainComponent 
       @exitEvent="changeTab"
       v-if="currentTab == 'main-tab'"></MainComponent>
-    <div v-if="currentTab == 'banner'">BANNER</div>
+    <div v-if="currentTab == 'banner'">
+      <BannerComponent></BannerComponent>
+    </div>
 </template>
 
 <script>
 import AuthComponent from '@/components/Auth/AuthComponent.vue';
 import MainComponent from '@/components/MainBlock/MainComponent.vue';
+import BannerComponent from './components/MainBlock/BannerComponent.vue';
 import Cookie from './assets/js/cookie.js';
 export default {
   name: 'App',
@@ -34,7 +37,7 @@ export default {
     }
   },
   components: {
-    AuthComponent, MainComponent
+    AuthComponent, MainComponent, BannerComponent
   }
 }
 </script>
@@ -42,7 +45,7 @@ export default {
 <style>
 @import url('/src/assets/css/index.css');
 #app {
-  background: url('/src/assets/img/screen2.jpeg') no-repeat center center;
+  background: url('/src/assets/img/_ (3).jpeg') no-repeat center center;
   background-size: cover;
   position: fixed;
   top: 0;
@@ -51,5 +54,12 @@ export default {
   left: 0;
   display: flex;
   flex-direction: column;
+}
+
+@media screen and (min-width: 500px) {
+  #app {
+    background: none !important;
+    justify-content: center;
+  }
 }
 </style>
