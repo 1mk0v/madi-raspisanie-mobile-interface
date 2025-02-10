@@ -11,11 +11,8 @@
                 </Transition>
             </div>
         </div>
-        <CalendarComponent 
-            @created-calendar="createdCalendarHandler" 
-            @changeDayEvent="changeDayHandler"
-            @changeWeekTypeEvent="changeWeekTypeHandler" 
-            :new-choosed-num="weekdayNum">
+        <CalendarComponent @created-calendar="createdCalendarHandler" @changeDayEvent="changeDayHandler"
+            @changeWeekTypeEvent="changeWeekTypeHandler" :new-choosed-num="weekdayNum">
         </CalendarComponent>
     </div>
 
@@ -24,8 +21,7 @@
             <div class="swiper-slide" v-for="weekday, index in currentCalendarWeek" :key="index">
                 <div class="schedule-wrapper">
                     <div class="schedule">
-                        <EventBlock v-for="event, index in currentSchedule(weekday)" 
-                            :eventData="event"
+                        <EventBlock v-for="event, index in currentSchedule(weekday)" :eventData="event"
                             :key="index + event.weekday">
                         </EventBlock>
                     </div>
@@ -50,10 +46,10 @@ export default {
             scheduleSwiper: '',
             cookie: new Cookie(),
             communityValue: 'None',
-            currentWeekdayType: this.getWeekType(),
+            currentWeekdayType: this.getWeekTypeV2(),
             monthNum: new Date().getMonth(),
             weekdayNum: new Date().getDay() - 1,
-            weekdayType: this.getWeekType(),
+            weekdayType: this.getWeekTypeV2(),
             showWeek: true,
             currentCalendarWeek: [],
             schedule: [],
@@ -88,7 +84,7 @@ export default {
             // })
             const api = new API(`/event/lessons/${this.cookie.get('community_type')}/${this.cookie.get('community_id')}`);
             api.get().then(
-                (data) => { 
+                (data) => {
                     this.schedule = data.data;
                     this.currentCalendarWeek = event;
                 }
@@ -115,6 +111,15 @@ export default {
             let weekNumber = Math.ceil(days / 7);
             console.log(weekNumber)
             return (weekNumber % 2) ? 'Знаменатель' : 'Числитель';
+        },
+        getWeekTypeV2() {
+            let today = new Date();
+            let startOfYear = new Date(today.getFullYear(), 0, 1);
+            let timeDiff = today - startOfYear;
+            let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            let weekNumber = Math.floor(daysDiff / 7);
+            console.log(weekNumber);
+            return (weekNumber % 2 === 0) ? 'Числитель' : 'Знаменатель'
         },
         exitHandler() {
             this.cookie.remove('community_id');
@@ -183,7 +188,10 @@ export default {
 }
 
 .schedule-wrapper {
-    height: 100%; width: 100%; overflow: auto; position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    position: absolute;
 }
 
 #header {
