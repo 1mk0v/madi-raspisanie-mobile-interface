@@ -46,10 +46,10 @@ export default {
             scheduleSwiper: '',
             cookie: new Cookie(),
             communityValue: 'None',
-            currentWeekdayType: this.getWeekTypeV2(),
+            currentWeekdayType: this.getWeekType(),
             monthNum: new Date().getMonth(),
             weekdayNum: new Date().getDay() - 1,
-            weekdayType: this.getWeekTypeV2(),
+            weekdayType: this.getWeekType(),
             showWeek: true,
             currentCalendarWeek: [],
             schedule: [],
@@ -105,21 +105,12 @@ export default {
             this.currentWeekdayType = (this.currentWeekdayType == 'Знаменатель') ? 'Числитель' : 'Знаменатель';
         },
         getWeekType() {
-            let date = new Date();
-            let startDate = new Date(date.getFullYear(), 0, 1);
-            let days = Math.ceil((date - startDate) / (24 * 60 * 60 * 1000));
-            let weekNumber = Math.ceil(days / 7);
-            console.log(weekNumber)
-            return (weekNumber % 2) ? 'Знаменатель' : 'Числитель';
-        },
-        getWeekTypeV2() {
-            let today = new Date();
-            let startOfYear = new Date(today.getFullYear(), 0, 1);
-            let timeDiff = today - startOfYear;
-            let daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-            let weekNumber = Math.floor(daysDiff / 7);
-            console.log(weekNumber);
-            return (weekNumber % 2 === 0) ? 'Числитель' : 'Знаменатель'
+            const currentDate = new Date();
+            const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+            const firstWeekday = startOfYear.getDay();
+            const dayOfYear = Math.floor((currentDate - startOfYear) / (1000 * 60 * 60 * 24)) + 1;
+            const adjustedWeekNumber = Math.ceil((dayOfYear + firstWeekday - 1) / 7);
+            return adjustedWeekNumber % 2 === 0 ? 'Числитель' : 'Знаменатель';
         },
         exitHandler() {
             this.cookie.remove('community_id');
